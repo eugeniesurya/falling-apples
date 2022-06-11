@@ -1,3 +1,6 @@
+namespace SpriteKind {
+    export const GoldenFood = SpriteKind.create()
+}
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     isGameStarted = 1
     direction = -1
@@ -12,6 +15,16 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     isGameStarted = 1
     direction = 1
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.GoldenFood, function (sprite, otherSprite) {
+    music.magicWand.play()
+    info.changeScoreBy(2)
+    otherSprite.destroy()
+    Speed = 10
+    mySprite.startEffect(effects.fire)
+    pause(5000)
+    Speed = 5
+    effects.clearParticles(mySprite)
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     music.baDing.play()
     info.changeScoreBy(1)
@@ -20,6 +33,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
 let mySprite2: Sprite = null
 let direction = 0
 let isGameStarted = 0
+let mySprite: Sprite = null
+let Speed = 0
+Speed = 5
 scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
@@ -142,7 +158,7 @@ scene.setBackgroundImage(img`
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777
     `)
-let mySprite = sprites.create(img`
+mySprite = sprites.create(img`
     . . . . . . f f f f . . . . . . 
     . . . . f f f 2 2 f f f . . . . 
     . . . f f f 2 2 2 2 f f f . . . 
@@ -164,15 +180,24 @@ mySprite.setStayInScreen(true)
 mySprite.setPosition(80, 105)
 isGameStarted = 0
 direction = 0
+let time = 60
 forever(function () {
     if (isGameStarted == 1) {
-        pause(60000)
+        for (let index = 0; index < 60; index++) {
+            mySprite.sayText(time)
+            pause(1000)
+            time += -1
+        }
         isGameStarted = 0
-        game.over(true)
+        if (info.score() >= 25) {
+            game.over(true)
+        } else {
+            game.over(false)
+        }
     }
 })
 forever(function () {
-    mySprite.x += direction * 5
+    mySprite.x += direction * Speed
     pause(100)
 })
 forever(function () {
@@ -198,5 +223,31 @@ forever(function () {
         mySprite2.setPosition(randint(0, 160), 0)
         mySprite2.setVelocity(0, 50)
         pause(2000)
+    }
+})
+forever(function () {
+    pause(randint(2000, 16000))
+    if (isGameStarted == 1) {
+        mySprite2 = sprites.create(img`
+            . . . . . . . e c 7 . . . . . . 
+            . . . . e e e c 7 7 e e . . . . 
+            . . c e e e e c 7 e 5 5 e e . . 
+            . c e e e e e c 6 e e 5 5 5 e . 
+            . c e e e 5 e c c 5 4 5 4 5 e . 
+            c e e e 5 5 5 5 5 5 4 5 5 5 5 e 
+            c e e 5 5 5 5 5 5 5 5 4 4 5 5 e 
+            c e e 5 5 5 5 5 5 5 5 5 5 5 5 e 
+            c e e 5 5 5 5 5 5 5 5 5 5 5 5 e 
+            c e e 5 5 5 5 5 5 5 5 5 5 5 5 e 
+            c e e 5 5 5 5 5 5 5 5 5 5 4 5 e 
+            . e e e 5 5 5 5 5 5 5 5 5 4 e . 
+            . 2 e e 5 5 5 5 5 5 5 5 4 2 e . 
+            . . 2 e e 5 5 5 5 5 4 4 2 e . . 
+            . . . 2 2 e e 4 4 4 2 e e . . . 
+            . . . . . 2 2 e e e e . . . . . 
+            `, SpriteKind.GoldenFood)
+        mySprite2.setPosition(randint(0, 160), 0)
+        mySprite2.setVelocity(0, 50)
+        pause(randint(2000, 16000))
     }
 })
