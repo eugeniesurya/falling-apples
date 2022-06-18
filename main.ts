@@ -1,5 +1,6 @@
 namespace SpriteKind {
     export const GoldenFood = SpriteKind.create()
+    export const PresentBig = SpriteKind.create()
 }
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     isGameStarted = 1
@@ -14,6 +15,34 @@ controller.left.onEvent(ControllerButtonEvent.Released, function () {
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     isGameStarted = 1
     direction = 1
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.PresentBig, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    caughtPresentBig += 1
+    if (caughtPresentBig >= 2) {
+        currentCharacterX = mySprite.x
+        sprite.destroy()
+        mySprite = sprites.create(img`
+            eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+            eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+            .........b55b..............................b55b...
+            ......bbbbbb............................bbbbbb....
+            .....bb55555b..........................bb55555b...
+            .bbbbb5555555b.....................bbbbb5555555b..
+            .bd5b55555555b.....................bd5b55555555b..
+            ..b55b5d1f5d4f......................b55b5d1f5d4f..
+            ..bd55b1ff544c......................bd55b1ff544c..
+            bbdb555dfb4444b...................bbdb555dfb4444b.
+            bddcd55b5444444b..................bddcd55b5444444b
+            cdddccb5555555b...................cdddccb5555555b.
+            cbddddd3555555b...................cbddddd3555555b.
+            .cdddddd55555db....................cdddddd55555db.
+            ..cbddddd555bb......................cbddddd555bb..
+            ...ccccccccbb........................ccccccccbb...
+            `, SpriteKind.Player)
+        mySprite.y = 100
+        mySprite.x = currentCharacterX
+    }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.GoldenFood, function (sprite, otherSprite) {
     music.magicWand.play()
@@ -31,6 +60,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
     otherSprite.destroy()
 })
 let mySprite2: Sprite = null
+let currentCharacterX = 0
+let caughtPresentBig = 0
 let direction = 0
 let isGameStarted = 0
 let mySprite: Sprite = null
@@ -181,6 +212,7 @@ mySprite.setPosition(80, 105)
 isGameStarted = 0
 direction = 0
 let time = 60
+caughtPresentBig = 0
 forever(function () {
     if (isGameStarted == 1) {
         for (let index = 0; index < 60; index++) {
@@ -189,7 +221,7 @@ forever(function () {
             time += -1
         }
         isGameStarted = 0
-        if (info.score() >= 25) {
+        if (info.score() >= 30) {
             game.over(true)
         } else {
             game.over(false)
@@ -220,6 +252,140 @@ forever(function () {
             . . . 2 2 e e 4 4 4 2 e e . . . 
             . . . . . 2 2 e e e e . . . . . 
             `, SpriteKind.Food)
+        mySprite2.setPosition(randint(0, 160), 0)
+        mySprite2.setVelocity(0, 50)
+        pause(2000)
+    }
+})
+forever(function () {
+    if (isGameStarted == 1 && caughtPresentBig <= 1) {
+        pause(randint(0, 30000))
+        mySprite2 = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . b 5 b . . . 
+            . . . . . . . . . b 5 b . . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . b b b b b 5 5 5 5 5 5 5 b . . 
+            . b d 5 b 5 5 5 5 5 5 5 5 b . . 
+            . . b 5 5 b 5 d 1 f 5 d 4 f . . 
+            . . b d 5 5 b 1 f f 5 4 4 c . . 
+            b b d b 5 5 5 d f b 4 4 4 4 4 b 
+            b d d c d 5 5 b 5 4 4 4 4 4 b . 
+            c d d d c c b 5 5 5 5 5 5 5 b . 
+            c b d d d d d 5 5 5 5 5 5 5 b . 
+            . c d d d d d d 5 5 5 5 5 d b . 
+            . . c b d d d d d 5 5 5 b b . . 
+            . . . c c c c c c c c b b . . . 
+            `, SpriteKind.PresentBig)
+        animation.runImageAnimation(
+        mySprite2,
+        [img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . b 5 5 b . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . b b b b b 5 5 5 5 5 5 5 b . . 
+            . b d 5 b 5 5 5 5 5 5 5 5 b . . 
+            . . b 5 5 b 5 d 1 f 5 d 4 f . . 
+            . . b d 5 5 b 1 f f 5 4 4 c . . 
+            b b d b 5 5 5 d f b 4 4 4 4 b . 
+            b d d c d 5 5 b 5 4 4 4 4 4 4 b 
+            c d d d c c b 5 5 5 5 5 5 5 b . 
+            c b d d d d d 5 5 5 5 5 5 5 b . 
+            . c d d d d d d 5 5 5 5 5 d b . 
+            . . c b d d d d d 5 5 5 b b . . 
+            . . . c c c c c c c c b b . . . 
+            `,img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . b 5 b . . . 
+            . . . . . . . . . b 5 b . . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . b b b b b 5 5 5 5 5 5 5 b . . 
+            . b d 5 b 5 5 5 5 5 5 5 5 b . . 
+            . . b 5 5 b 5 d 1 f 5 d 4 f . . 
+            . . b d 5 5 b 1 f f 5 4 4 c . . 
+            b b d b 5 5 5 d f b 4 4 4 4 4 b 
+            b d d c d 5 5 b 5 4 4 4 4 4 b . 
+            c d d d c c b 5 5 5 5 5 5 5 b . 
+            c b d d d d d 5 5 5 5 5 5 5 b . 
+            . c d d d d d d 5 5 5 5 5 d b . 
+            . . c b d d d d d 5 5 5 b b . . 
+            . . . c c c c c c c c b b . . . 
+            `,img`
+            . . . . . . . . . . b 5 b . . . 
+            . . . . . . . . . b 5 b . . . . 
+            . . . . . . . . . b c . . . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . . . . b b 5 d 1 f 5 5 d f . . 
+            . . . . b 5 5 1 f f 5 d 4 c . . 
+            . . . . b 5 5 d f b d d 4 4 . . 
+            b d d d b b d 5 5 5 4 4 4 4 4 b 
+            b b d 5 5 5 b 5 5 4 4 4 4 4 b . 
+            b d c 5 5 5 5 d 5 5 5 5 5 b . . 
+            c d d c d 5 5 b 5 5 5 5 5 5 b . 
+            c b d d c c b 5 5 5 5 5 5 5 b . 
+            . c d d d d d d 5 5 5 5 5 d b . 
+            . . c b d d d d d 5 5 5 b b . . 
+            . . . c c c c c c c c b b . . . 
+            `,img`
+            . . . . . . . . . . b 5 b . . . 
+            . . . . . . . . . b 5 b . . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . . . . b b 5 d 1 f 5 d 4 c . . 
+            . . . . b 5 5 1 f f d d 4 4 4 b 
+            . . . . b 5 5 d f b 4 4 4 4 b . 
+            . . . b d 5 5 5 5 4 4 4 4 b . . 
+            . . b d d 5 5 5 5 5 5 5 5 b . . 
+            . b d d d d 5 5 5 5 5 5 5 5 b . 
+            b d d d b b b 5 5 5 5 5 5 5 b . 
+            c d d b 5 5 d c 5 5 5 5 5 5 b . 
+            c b b d 5 d c d 5 5 5 5 5 5 b . 
+            . b 5 5 b c d d 5 5 5 5 5 d b . 
+            b b c c c d d d d 5 5 5 b b . . 
+            . . . c c c c c c c c b b . . . 
+            `,img`
+            . . . . . . . . . . b 5 b . . . 
+            . . . . . . . . . b 5 b . . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . . . . b b 5 d 1 f 5 d 4 c . . 
+            . . . . b 5 5 1 f f d d 4 4 4 b 
+            . . . . b 5 5 d f b 4 4 4 4 b . 
+            . . . b d 5 5 5 5 4 4 4 4 b . . 
+            . b b d d d 5 5 5 5 5 5 5 b . . 
+            b d d d b b b 5 5 5 5 5 5 5 b . 
+            c d d b 5 5 d c 5 5 5 5 5 5 b . 
+            c b b d 5 d c d 5 5 5 5 5 5 b . 
+            c b 5 5 b c d d 5 5 5 5 5 5 b . 
+            b b c c c d d d 5 5 5 5 5 d b . 
+            . . . . c c d d d 5 5 5 b b . . 
+            . . . . . . c c c c c b b . . . 
+            `,img`
+            . . . . . . . . . . b 5 b . . . 
+            . . . . . . . . . b 5 b . . . . 
+            . . . . . . b b b b b b . . . . 
+            . . . . . b b 5 5 5 5 5 b . . . 
+            . . . . b b 5 d 1 f 5 5 d f . . 
+            . . . . b 5 5 1 f f 5 d 4 c . . 
+            . . . . b 5 5 d f b d d 4 4 . . 
+            . b b b d 5 5 5 5 5 4 4 4 4 4 b 
+            b d d d b b d 5 5 4 4 4 4 4 b . 
+            b b d 5 5 5 b 5 5 5 5 5 5 b . . 
+            c d c 5 5 5 5 d 5 5 5 5 5 5 b . 
+            c b d c d 5 5 b 5 5 5 5 5 5 b . 
+            . c d d c c b d 5 5 5 5 5 d b . 
+            . . c b d d d d d 5 5 5 b b . . 
+            . . . c c c c c c c c b b . . . 
+            . . . . . . . . . . . . . . . . 
+            `],
+        200,
+        true
+        )
         mySprite2.setPosition(randint(0, 160), 0)
         mySprite2.setVelocity(0, 50)
         pause(2000)
