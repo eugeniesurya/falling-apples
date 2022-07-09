@@ -1,7 +1,60 @@
 namespace SpriteKind {
     export const GoldenFood = SpriteKind.create()
     export const PresentBig = SpriteKind.create()
+    export const PresentZigzag = SpriteKind.create()
+    export const PresentFlying = SpriteKind.create()
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (isFlying == 1) {
+        verticalDirection = -1
+    }
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.PresentFlying, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    caughtPresentFlying += 1
+    if (caughtPresentFlying >= 2) {
+        sprite.destroy()
+        mySprite = sprites.create(img`
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ................................
+            ........ccccc...................
+            ......ccbbbbbc..................
+            ....ccddbbbbbbf.................
+            ...cbbbddbbffbf.................
+            ....ffffdbbffbff................
+            .......fbbbbbbbf................
+            .......fbbbbbbbff...............
+            ......ffbbbbbbbbfff.............
+            ......f6bbbbbb663ddcc...........
+            .....cc66bbbb666dddddc..........
+            .....cd36666663dddddddc.........
+            .....cddd3333dbddddddbcc........
+            .....cddddddddbdddddbbddc.......
+            .....cddddddddbbdddbbdddbc......
+            ......cddddddddbbdbbddddbbccc...
+            ......ccddddddddbbbbcccccbbbcc..
+            .......ccddddddddddddddbccffff..
+            ........cccbddccbddddbbfff......
+            ........c333bb333cbbfff.........
+            ........c33cc33cc3fff...........
+            `, SpriteKind.Player)
+        mySprite.setStayInScreen(true)
+        isFlying = 1
+    }
+})
+controller.down.onEvent(ControllerButtonEvent.Released, function () {
+    verticalDirection = 0
+})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     isGameStarted = 1
     direction = -1
@@ -12,9 +65,88 @@ controller.right.onEvent(ControllerButtonEvent.Released, function () {
 controller.left.onEvent(ControllerButtonEvent.Released, function () {
     direction = 0
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.PresentZigzag, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    caughtPresentZigzag += 1
+    if (caughtPresentZigzag >= 2) {
+        caughtPresentZigzag = 0
+        for (let index = 0; index <= 2; index++) {
+            mySprite3 = sprites.create(img`
+                . . . . . . . 6 . . . . . . . . 
+                . . . . . . 8 6 6 . . . 6 8 . . 
+                . . . e e e 8 8 6 6 . 6 7 8 . . 
+                . . e 2 2 2 2 e 8 6 6 7 6 . . . 
+                . e 2 2 4 4 2 7 7 7 7 7 8 6 . . 
+                . e 2 4 4 2 6 7 7 7 6 7 6 8 8 . 
+                e 2 4 5 2 2 6 7 7 6 2 7 7 6 . . 
+                e 2 4 4 2 2 6 7 6 2 2 6 7 7 6 . 
+                e 2 4 2 2 2 6 6 2 2 2 e 7 7 6 . 
+                e 2 4 2 2 4 2 2 2 4 2 2 e 7 6 . 
+                e 2 4 2 2 2 2 2 2 2 2 2 e c 6 . 
+                e 2 2 2 2 2 2 2 4 e 2 e e c . . 
+                e e 2 e 2 2 4 2 2 e e e c . . . 
+                e e e e 2 e 2 2 e e e c . . . . 
+                e e e 2 e e c e c c c . . . . . 
+                . c c c c c c c . . . . . . . . 
+                `, SpriteKind.Food)
+            mySprite3.setPosition(index * 80, 0)
+            mySprite3.setVelocity(0, 50)
+            pause(2000)
+        }
+        for (let index = 0; index <= 2; index++) {
+            mySprite3 = sprites.create(img`
+                . . . . . . . 6 . . . . . . . . 
+                . . . . . . 8 6 6 . . . 6 8 . . 
+                . . . e e e 8 8 6 6 . 6 7 8 . . 
+                . . e 2 2 2 2 e 8 6 6 7 6 . . . 
+                . e 2 2 4 4 2 7 7 7 7 7 8 6 . . 
+                . e 2 4 4 2 6 7 7 7 6 7 6 8 8 . 
+                e 2 4 5 2 2 6 7 7 6 2 7 7 6 . . 
+                e 2 4 4 2 2 6 7 6 2 2 6 7 7 6 . 
+                e 2 4 2 2 2 6 6 2 2 2 e 7 7 6 . 
+                e 2 4 2 2 4 2 2 2 4 2 2 e 7 6 . 
+                e 2 4 2 2 2 2 2 2 2 2 2 e c 6 . 
+                e 2 2 2 2 2 2 2 4 e 2 e e c . . 
+                e e 2 e 2 2 4 2 2 e e e c . . . 
+                e e e e 2 e 2 2 e e e c . . . . 
+                e e e 2 e e c e c c c . . . . . 
+                . c c c c c c c . . . . . . . . 
+                `, SpriteKind.Food)
+            mySprite3.setPosition(160 - index * 80, 0)
+            mySprite3.setVelocity(0, 50)
+            pause(2000)
+        }
+        for (let index = 0; index <= 2; index++) {
+            mySprite3 = sprites.create(img`
+                . . . . . . . 6 . . . . . . . . 
+                . . . . . . 8 6 6 . . . 6 8 . . 
+                . . . e e e 8 8 6 6 . 6 7 8 . . 
+                . . e 2 2 2 2 e 8 6 6 7 6 . . . 
+                . e 2 2 4 4 2 7 7 7 7 7 8 6 . . 
+                . e 2 4 4 2 6 7 7 7 6 7 6 8 8 . 
+                e 2 4 5 2 2 6 7 7 6 2 7 7 6 . . 
+                e 2 4 4 2 2 6 7 6 2 2 6 7 7 6 . 
+                e 2 4 2 2 2 6 6 2 2 2 e 7 7 6 . 
+                e 2 4 2 2 4 2 2 2 4 2 2 e 7 6 . 
+                e 2 4 2 2 2 2 2 2 2 2 2 e c 6 . 
+                e 2 2 2 2 2 2 2 4 e 2 e e c . . 
+                e e 2 e 2 2 4 2 2 e e e c . . . 
+                e e e e 2 e 2 2 e e e c . . . . 
+                e e e 2 e e c e c c c . . . . . 
+                . c c c c c c c . . . . . . . . 
+                `, SpriteKind.Food)
+            mySprite3.setPosition(index * 80, 0)
+            mySprite3.setVelocity(0, 50)
+            pause(2000)
+        }
+    }
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     isGameStarted = 1
     direction = 1
+})
+controller.up.onEvent(ControllerButtonEvent.Released, function () {
+    verticalDirection = 0
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.PresentBig, function (sprite, otherSprite) {
     otherSprite.destroy()
@@ -42,6 +174,12 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.PresentBig, function (sprite, ot
             `, SpriteKind.Player)
         mySprite.y = 100
         mySprite.x = currentCharacterX
+        mySprite.setStayInScreen(true)
+    }
+})
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (isFlying == 1) {
+        verticalDirection = 1
     }
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.GoldenFood, function (sprite, otherSprite) {
@@ -59,8 +197,19 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
     info.changeScoreBy(1)
     otherSprite.destroy()
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprite.destroy()
+    otherSprite.destroy()
+    game.over(false)
+})
+let mySprite5: Sprite = null
 let mySprite2: Sprite = null
 let currentCharacterX = 0
+let mySprite3: Sprite = null
+let verticalDirection = 0
+let isFlying = 0
+let caughtPresentFlying = 0
+let caughtPresentZigzag = 0
 let caughtPresentBig = 0
 let direction = 0
 let isGameStarted = 0
@@ -213,6 +362,9 @@ isGameStarted = 0
 direction = 0
 let time = 60
 caughtPresentBig = 0
+caughtPresentZigzag = 0
+caughtPresentFlying = 0
+isFlying = 0
 forever(function () {
     if (isGameStarted == 1) {
         for (let index = 0; index < 60; index++) {
@@ -258,8 +410,8 @@ forever(function () {
     }
 })
 forever(function () {
+    pause(randint(0, 30000))
     if (isGameStarted == 1 && caughtPresentBig <= 1) {
-        pause(randint(0, 30000))
         mySprite2 = sprites.create(img`
             . . . . . . . . . . . . . . . . 
             . . . . . . . . . . b 5 b . . . 
@@ -389,7 +541,11 @@ forever(function () {
         mySprite2.setPosition(randint(0, 160), 0)
         mySprite2.setVelocity(0, 50)
         pause(2000)
+        pause(randint(0, 30000))
     }
+})
+forever(function () {
+	
 })
 forever(function () {
     pause(randint(2000, 16000))
@@ -415,5 +571,89 @@ forever(function () {
         mySprite2.setPosition(randint(0, 160), 0)
         mySprite2.setVelocity(0, 50)
         pause(randint(2000, 16000))
+    }
+})
+forever(function () {
+    pause(randint(0, 30000))
+    if (isGameStarted == 1 && caughtPresentFlying <= 1) {
+        mySprite2 = sprites.create(img`
+            . . . . . . . 6 . . . . . . . . 
+            . . . . . . 8 6 6 . . . 6 8 . . 
+            . . . e e e 8 8 6 6 . 6 7 8 . . 
+            . . e 2 2 2 2 e 8 6 6 7 6 . . . 
+            . e 2 2 4 4 2 7 7 7 7 7 8 6 . . 
+            . e 2 4 4 8 6 7 7 7 6 7 6 8 8 . 
+            e 8 4 5 8 8 6 7 7 6 8 7 7 6 . . 
+            e 8 4 4 8 8 6 7 6 8 8 6 7 7 6 . 
+            e 8 4 8 8 8 6 6 8 8 8 e 7 7 6 . 
+            e 8 4 8 8 4 8 8 8 4 8 8 e 7 6 . 
+            e 8 4 8 8 8 8 8 8 8 8 8 e c 6 . 
+            e 8 8 8 8 8 8 8 4 e 8 e e c . . 
+            e e 8 e 8 8 4 8 8 e e e c . . . 
+            e e e e 8 e 8 8 e e e c . . . . 
+            e e e 2 e e c e c c c . . . . . 
+            . c c c c c c c . . . . . . . . 
+            `, SpriteKind.PresentFlying)
+        mySprite2.setPosition(randint(0, 160), 0)
+        mySprite2.setVelocity(0, 50)
+        pause(2000)
+        pause(randint(0, 30000))
+    }
+})
+forever(function () {
+    pause(randint(0, 30000))
+    if (isGameStarted == 1 && caughtPresentZigzag <= 1) {
+        mySprite2 = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . 8 8 8 8 . . . . . . . . 
+            . . . 8 . 8 8 . 8 . . . . . . . 
+            . . . . 8 8 8 8 . . . . . . . . 
+            . . 2 2 2 8 8 2 2 2 . . . . . . 
+            . . 2 2 2 8 8 2 2 2 . . . . . . 
+            . . 2 2 2 8 8 2 2 2 . . . . . . 
+            . . 2 2 2 8 8 2 2 2 . . . . . . 
+            . . 2 2 2 8 8 2 2 2 . . . . . . 
+            . . 2 2 2 8 8 2 2 2 . . . . . . 
+            . . 2 2 2 8 8 2 2 2 . . . . . . 
+            `, SpriteKind.PresentZigzag)
+        mySprite2.setPosition(randint(0, 160), 0)
+        mySprite2.setVelocity(0, 50)
+        pause(2000)
+        pause(randint(0, 30000))
+    }
+})
+forever(function () {
+    mySprite.y += Speed * verticalDirection
+    pause(100)
+})
+forever(function () {
+    pause(randint(5000, 15000))
+    if (isGameStarted == 1) {
+        mySprite5 = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . f . . . . . . . . . . 
+            . . . . f . f . . . . . . . . . 
+            . . . 4 . . . f . . . . . . . . 
+            . . . . f f f f f f f . . . . . 
+            . . . . f f f f f f f . . . . . 
+            . . . . f f f f f f f . . . . . 
+            . . . . f f f f f f f . . . . . 
+            . . . . f f f f f f f . . . . . 
+            . . . . f f f f f f f . . . . . 
+            . . . . f f f f f f f . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            `, SpriteKind.Enemy)
+        mySprite5.setPosition(randint(0, 160), 0)
+        mySprite5.setVelocity(0, 50)
+        pause(randint(5000, 15000))
     }
 })
